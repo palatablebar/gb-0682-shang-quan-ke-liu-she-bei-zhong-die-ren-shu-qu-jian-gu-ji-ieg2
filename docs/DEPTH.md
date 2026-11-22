@@ -29,6 +29,9 @@
 | TRAP-14 | 同版冲突 | 最后覆盖 | 整组隔离 | `app/modules/m2_mapping/rules.py` | `tests/test_mapping.py::test_real_conflict_quarantine` |
 | TRAP-18 | 三种空态 | 除零或伪成功 | 三个错误码 | `app/modules/m1_ingest/reader.py` | `tests/test_ingest.py::test_empty_three_states` |
 | TRAP-26 | 旧版本复核 | 覆盖新结论 | 事务条件更新 | `app/store.py` | `tests/test_archive.py::test_stale_review` |
+| TRAP-27 | 跨场交集 | 混入正式区间 | CROSS_MALL整行隔离 | `app/modules/m2_mapping/rules.py` | `tests/test_mall.py::test_cross_mall_pair_never_enters_formal` |
+| TRAP-28 | 同批重跑 | 版本无限膨胀 | 摘要比对幂等晋升 | `app/store.py` | `tests/test_mall.py::test_same_batch_rerun_adds_no_version` |
+| TRAP-29 | 切换中途失败 | 半新半旧 | 单事务整体回滚 | `app/store.py` | `tests/test_mall.py::test_failed_switch_keeps_old_version` |
 | TRAP-11 | 时区混用 | 同刻不同桶 | UTC归整 | `app/modules/m2_mapping/coerce.py` | `tests/test_versions.py::test_same_instant` |
 | TRAP-19 | 三方约束矛盾 | 输出伪精确数 | 非负原子区域可行检查 | `app/modules/m5_calculate/rules.py` | `tests/test_calculate.py::test_three_way_contradiction` |
 

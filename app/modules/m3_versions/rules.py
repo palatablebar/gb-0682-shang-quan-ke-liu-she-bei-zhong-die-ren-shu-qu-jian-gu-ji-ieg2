@@ -16,7 +16,7 @@ def apply(state):
             bad.append((r,'RANGE'));continue
         r['count']=int(value)
         if r['kind']=='pair':r['left'],r['right']=sorted([r['left'],r['right']])
-        key=(r['bucket'],r['kind'],r['left'],r['right']);groups[key].append(r)
+        key=(r['mall'],r['bucket'],r['kind'],r['left'],r['right']);groups[key].append(r)
     selected=[]
     for key,rows in groups.items():
         high=max(Decimal(str(r['version'])) for r in rows);latest=[r for r in rows if Decimal(str(r['version']))==high]

@@ -17,13 +17,13 @@ def model(observations):
 
 def apply(state):
     grouped=defaultdict(list)
-    for r in state['observations']:grouped[r['bucket']].append(r)
+    for r in state['observations']:grouped[(r['mall'],r['bucket'])].append(r)
     result=[];bad_buckets=set()
-    for bucket,rows in sorted(grouped.items()):
+    for (mall,bucket),rows in sorted(grouped.items()):
         try:
-            result.append({'bucket':bucket,'model':model(rows),'line':min(r['_line'] for r in rows)})
+            result.append({'mall':mall,'bucket':bucket,'model':model(rows),'line':min(r['_line'] for r in rows)})
         except DomainError as e:
-            bad_buckets.add(bucket)
+            bad_buckets.add((mall,bucket))
             for r in state['rows']:
-                if r['bucket']==bucket:state['quarantine'].append({'line':r['_line'],'id':r['id'],'code':e.code,'raw':r['_raw']})
-    state['rows']=[r for r in state['rows'] if r['bucket'] not in bad_buckets];state['models']=result;return state
+                if (r['mall'],r['bucket'])==(mall,bucket):state['quarantine'].append({'line':r['_line'],'id':r['id'],'code':e.code,'raw':r['_raw']})
+    state['rows']=[r for r in state['rows'] if (r['mall'],r['bucket']) not in bad_buckets];state['models']=result;return state

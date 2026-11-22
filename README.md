@@ -24,6 +24,8 @@ docker compose up --build -d
 
 无法识别个人时只输出满足区域交集约束的人数上下界；矛盾观测隔离而非伪造精确人数。完整数值、边界和异常定义见 `docs/DATA-DICTIONARY.md`。
 
+共享平台多商场接入时，正式区间身份为(商场,时段)：归属取记录级 `mall` 列（缺省 `default`），跨场交集整行隔离，估界页与封存导出同源同分组，补传只重算受影响商场。裁决全文见 `docs/FORMAL-INTERVALS.md`，双商场样例为 `malls.csv` 与 `malls-m2.csv`（M2补传）。
+
 ## 验证
 
 ```bash

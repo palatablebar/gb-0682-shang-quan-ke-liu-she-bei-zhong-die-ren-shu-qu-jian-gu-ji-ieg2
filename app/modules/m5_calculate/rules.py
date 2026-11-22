@@ -17,10 +17,15 @@ def apply(state):
     results=[];bad=set()
     for i,item in enumerate(state['models']):
         try:
-            low,high,tlo,thi=bounds(item['model']);results.append({'id':item['bucket'],'line':item['line'],'lower':low,'upper':high,'width':high-low,'triple_lower':tlo,'triple_upper':thi,'code':'EXACT' if low==high else 'INTERVAL'})
+            low,high,tlo,thi=bounds(item['model']);results.append({'mall':item['mall'],'id':item['bucket'],'line':item['line'],'lower':low,'upper':high,'width':high-low,'triple_lower':tlo,'triple_upper':thi,'code':'EXACT' if low==high else 'INTERVAL'})
         except DomainError as e:
-            bad.add(item['bucket'])
+            bad.add((item['mall'],item['bucket']))
             for r in state['rows']:
-                if r['bucket']==item['bucket']:state['quarantine'].append({'line':r['_line'],'id':r['id'],'code':e.code,'raw':r['_raw']})
-    state['rows']=[r for r in state['rows'] if r['bucket'] not in bad]
-    state['calculations']=results;state['business']={'total':sum(r['lower'] for r in results),'upper_total':sum(r['upper'] for r in results),'buckets':len(results),'unit':'客次'};return state
+                if (r['mall'],r['bucket'])==(item['mall'],item['bucket']):state['quarantine'].append({'line':r['_line'],'id':r['id'],'code':e.code,'raw':r['_raw']})
+    state['rows']=[r for r in state['rows'] if (r['mall'],r['bucket']) not in bad]
+    results.sort(key=lambda r:(r['mall'],r['id']))
+    by_mall={}
+    for r in results:
+        m=by_mall.setdefault(r['mall'],{'total':0,'upper_total':0,'buckets':0,'unit':'客次'})
+        m['total']+=r['lower'];m['upper_total']+=r['upper'];m['buckets']+=1
+    state['calculations']=results;state['business']={'total':sum(r['lower'] for r in results),'upper_total':sum(r['upper'] for r in results),'buckets':len(results),'unit':'客次','by_mall':by_mall};return state

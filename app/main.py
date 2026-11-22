@@ -32,7 +32,8 @@ def create_app():
         return jsonify(store.review(run_id,data['version'],data.get('decision')))
     @app.get('/api/archive/<run_id>/export.csv')
     def download(run_id):
-        state=store.get(run_id)
+        store.get(run_id)
+        state=store.formal_state() or store.get(run_id)
         if not state.get('reconcile',{}).get('balanced'):raise DomainError('UNBALANCED','对账未平')
         return Response(bundle(state),mimetype='text/csv; charset=utf-8',headers={'Content-Disposition':'attachment; filename=evidence.csv'})
     with app.app_context():
